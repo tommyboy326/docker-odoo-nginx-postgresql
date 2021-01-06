@@ -41,16 +41,16 @@ services:
 
 ### Nginx #########################################
   nginx:
-      container_name: nginx
-      image: nginx:latest
-      restart: unless-stopped
-      ports:
-        - 80:80
-        - 443:443
-      volumes:
-        - ${NGINX_CONFIG}:/etc/nginx/conf.d
-        - ./certbot/conf:/etc/nginx/ssl
-        - ./certbot/data:/var/www/html
+    container_name: nginx
+    image: nginx:latest
+    restart: unless-stopped
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ${NGINX_CONFIG}:/etc/nginx/conf.d
+      - ./certbot/conf:/etc/nginx/ssl
+      - ./certbot/data:/var/www/html
 
 ### certbot #########################################
   certbot:
