@@ -1,0 +1,67 @@
+version: '3'
+services:
+### Odoo #########################################
+  odoo:
+    container_name: odoo
+    # image: odoo:latest
+    image: odoo:13
+    volumes:
+      - ./odoo/extra-addons:/mnt/extra-addons
+      - ./odoo/config:/etc/odoo
+      - odoo-web-data:/var/lib/odoo
+    ports:
+      - "${ODOO_PORT}:8069"
+
+### PostgreSQL #########################################
+  db:
+    container_name: odoo_db
+    image: postgres:13
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - odoo-db-data:/var/lib/postgresql/data/pgdata
+    ports:
+      - "${POSTGRES_PORT}:5432"
+
+### Pgadmin4 #########################################
+  pgadmin:
+    container_name: pgadmin4
+    image: dpage/pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_EMAIL}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_PASSWORD}
+    depends_on:
+      - db
+    ports:
+      - "5050:5050"
+    restart: unless-stopped
+
+### Nginx #########################################
+  nginx:
+      container_name: nginx
+      image: nginx:latest
+      restart: unless-stopped
+      ports:
+        - 80:80
+        - 443:443
+      volumes:
+        - ${NGINX_CONFIG}:/etc/nginx/conf.d
+        - ./certbot/conf:/etc/nginx/ssl
+        - ./certbot/data:/var/www/html
+
+### certbot #########################################
+    certbot:
+      container_name: certbot
+      image: certbot/certbot:latest
+      command: certonly --webroot --webroot-path=/var/www/html -- email ${CERTBOT_EMAIL} --agree-tos --no-eff-email -d domain.com -d ${CERTBOT_DOMAIN}
+      volumes:
+        - ./certbot/conf:/etc/letsencrypt
+        - ./certbot/logs:/var/log/letsencrypt
+        - ./certbot/data:/var/www/html
+
+volumes:
+  odoo-web-data:
+  odoo-db-data:

@@ -1,0 +1,28 @@
+### Odoo #########################################
+
+ODOO_PORT=5432
+
+### Nginx #########################################
+
+# apply ssl certbot
+NGINX_CONFIG = ./nginx/http
+# use ssl
+# NGINX_CONFIG = ./nginx/https
+
+### POSTGRES ######################################
+
+POSTGRES_VERSION=alpine
+POSTGRES_DB=POSTGRES
+POSTGRES_USER=Odoo
+POSTGRES_PASSWORD=secret
+POSTGRES_PORT=5432
+
+### PGADMIN ######################################
+
+PGADMIN_EMAIL=admin@gmail.com
+PGADMIN_PASSWORD=admin
+
+### certbot #########################################
+
+CERTBOT_EMAIL = youremail@mail.com
+CERTBOT_DOMAIN = www.domain.com
